@@ -1,0 +1,31 @@
+package com.example.demo.user.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.example.demo.user.entity.UserEntity;
+import com.example.demo.user.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+	
+	private final UserRepository userRepository;
+	
+	public List<UserEntity> findUserList() {
+		List<UserEntity> findUserList = userRepository.findAll();
+		
+        UserEntity user = new UserEntity();
+        user.setUsername("testUser3");
+        user.setPassword("1234");
+		
+		userRepository.save(user); // ⚠️ 주석 처리 가능
+		
+		return findUserList;
+	}
+	
+
+}

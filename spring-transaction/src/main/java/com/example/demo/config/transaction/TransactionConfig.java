@@ -1,5 +1,6 @@
 package com.example.demo.config.transaction;
 
+import java.security.Provider.Service;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class TransactionConfig {
     
     
     /**
-     * Advisor = *“어떤 메서드에 어떤 Advice(부가기능)를 적용할지”*를 결정하는 객체
+     * Advisor = 어떤 메서드에 어떤 Advice(부가기능)를 적용할지를 결정하는 객체
      * TransactionInterceptor = 트랜잭션을 시작/커밋/롤백하는 로직을 가진 Advice
      * AspectJExpressionPointcut → AOP에서 "어떤 메서드에 부가기능을 적용할지"를 표현
      * Advisor 생성 : return new DefaultPointcutAdvisor(pointcut, customTxInterceptor);
@@ -82,8 +83,8 @@ public class TransactionConfig {
 
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         // 적용 범위 (user.service 패키지 전체)
-        pointcut.setExpression("execution(* com.example.websocket_demo.user.service..*(..))");
-
+        pointcut.setExpression("execution(* com.example.demo.user.service..*(..))"); //정상 트랜잭션 처리
+//        pointcut.setExpression("@within(" + Service.class.getName() + ")"); //비정상 
         return new DefaultPointcutAdvisor(pointcut, customTxInterceptor);
     }
 
