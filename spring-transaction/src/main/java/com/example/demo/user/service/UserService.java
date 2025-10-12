@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.config.exception.BizException;
 import com.example.demo.user.entity.UserEntity;
 import com.example.demo.user.repository.UserRepository;
 
@@ -17,6 +18,13 @@ public class UserService {
 	
 	public List<UserEntity> findUserList() {
 		List<UserEntity> findUserList = userRepository.findAll();
+		
+//	    if (findUserList.isEmpty()) {
+//	        // ⚠️ 직접 BizException 던지기
+//	        throw new BizException("NO_USER_DATA", "등록된 유저가 없습니다.");
+//	    }
+//	    
+//	    System.out.println("111111111111");
 		
         UserEntity user = new UserEntity();
         user.setUsername("testUser3");

@@ -24,15 +24,18 @@ public class UserController {
 	
     @PostMapping("/findUserList")
     public ResponseEntity<?> findUserList() {
-        ResponseEntity<?> response;
-        try {
-            List<UserEntity> findUserList = userService.findUserList();
-            response = ResponseEntity.ok(findUserList);
-        } catch (BizException e) {
-            ErrorResponse error = new ErrorResponse(e.getErrorCode(), e.getMessage());
-            response = ResponseEntity.badRequest().body(error);
-        }
-        return response;
+//        ResponseEntity<?> response;
+//        try {
+//            List<UserEntity> findUserList = userService.findUserList();
+//            response = ResponseEntity.ok(findUserList);
+//        } catch (BizException e) {
+//            ErrorResponse error = new ErrorResponse(e.getErrorCode(), e.getMessage());
+//            response = ResponseEntity.badRequest().body(error);
+//        }
+//        return response;
+    	
+        List<UserEntity> findUserList = userService.findUserList(); // BizException 발생 가능
+        return ResponseEntity.ok(findUserList);
     }
 	
 }

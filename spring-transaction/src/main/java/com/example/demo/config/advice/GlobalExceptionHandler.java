@@ -59,6 +59,8 @@ public class GlobalExceptionHandler {
         body.put("message", ex.getMessage());
         
         System.out.println("handleBizException body ::: " + body);
+        System.err.println("handleBizException body ::: " + body);
+        
         
         //클라이언트 오류 400 에러
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);

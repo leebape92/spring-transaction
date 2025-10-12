@@ -1,6 +1,5 @@
 package com.example.demo.config.transaction;
 
-import java.security.Provider.Service;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +16,7 @@ import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute
 import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
-
+// 트랜잭션 AOP 설정
 
 @Configuration
 public class TransactionConfig {
