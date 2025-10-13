@@ -16,7 +16,15 @@ import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute
 import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
-// 트랜잭션 AOP 설정
+//AOP (Aspect-Oriented Programming, 관점 지향 프로그래밍)
+// 공통된 부가기능을 한 곳에서 모듈화해서 관리하는 프로그래밍 기법
+
+//AOP 핵심
+//Aspect (애스펙트)	부가기능(공통 기능) 묶음 (예: 트랜잭션, 로깅, 보안 등)
+//Advice (어드바이스)	실제로 실행될 부가기능 코드 (ex: 트랜잭션 시작/커밋/롤백)
+//Join Point (조인 포인트)	부가기능이 끼어들 수 있는 실행 시점 (메서드 호출 등)
+//Pointcut (포인트컷)	부가기능을 적용할 “대상 메서드”를 지정하는 표현식
+//Advisor (어드바이저)	Pointcut + Advice의 조합 (어디에 어떤 기능을 적용할지 정의)
 
 @Configuration
 public class TransactionConfig {

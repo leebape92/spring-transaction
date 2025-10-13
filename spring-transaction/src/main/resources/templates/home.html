@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>공통 AJAX 테스트</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+	<h2>공통 AJAX 비동기 호출 테스트</h2>
+	<button id="btnFindUser">유저 조회</button>
+  	<div id="result"></div>
+
+	<script>
+    /** ✅ 공통 POST 비동기 함수 */
+    function ajaxPostJson(url, data, onSuccess, onError) {
+    	debugger;
+      $.ajax({
+        url: url,  // 그냥 문자열 경로
+        type: "POST",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify(data),
+        success: function(response) {
+          if (onSuccess) onSuccess(response);
+        },
+        error: function(xhr) {
+        debugger;
+          let errMsg = "서버 오류가 발생했습니다.";
+          if (xhr.responseJSON && xhr.responseJSON.message) {
+            errMsg = xhr.responseJSON.message;
+          }
+          alert(errMsg); // 오류 메시지 alert
+          if (onError) onError(xhr);
+        }
+      });
+    }
+
+    /** ✅ 버튼 클릭 시 호출 */
+    $("#btnFindUser").on("click", function() {
+      $("#result").html("⏳ 조회 중...");
+      ajaxPostJson(
+        "/user/findUserList",   // ✅ 그냥 문자열 경로
+        {},                     // 요청 데이터
+        function success(data) {
+          let html = "<h4>유저 목록</h4><ul>";
+          $.each(data, function(i, user) {
+            html += "<li>" + user.username + "</li>";
+          });
+          html += "</ul>";
+          $("#result").html(html);
+        },
+        function error(err) {
+          $("#result").html("요청 실패");
+        }
+      );
+    });
+	</script>
+</body>
+</html>

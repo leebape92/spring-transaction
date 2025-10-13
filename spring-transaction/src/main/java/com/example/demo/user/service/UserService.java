@@ -23,7 +23,7 @@ public class UserService {
 //	        // ⚠️ 직접 BizException 던지기
 //	        throw new BizException("NO_USER_DATA", "등록된 유저가 없습니다.");
 //	    }
-//	    
+	    
 //	    System.out.println("111111111111");
 		
         UserEntity user = new UserEntity();
