@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.config.exception.BizException;
-import com.example.demo.config.exception.ErrorResponse;
+import com.example.demo.user.dto.UserDTO;
 //import com.example.demo.config.exception.ErrorResponse;
 import com.example.demo.user.entity.UserEntity;
 import com.example.demo.user.service.UserService;
@@ -36,6 +36,12 @@ public class UserController {
     	
         List<UserEntity> findUserList = userService.findUserList(); // BizException 발생 가능
         return ResponseEntity.ok(findUserList);
+    }
+    
+    @PostMapping("/saveUser")
+    public ResponseEntity<Void> saveUser(@RequestBody UserDTO userDTO) {
+        userService.saveUser(userDTO);
+        return ResponseEntity.ok().build();
     }
 	
 }

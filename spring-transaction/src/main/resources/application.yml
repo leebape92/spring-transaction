@@ -4,10 +4,10 @@ spring:
     url: jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password: 1234
-		
+
   messages:
-    basename: messages/messages # src/main/resources/messages/messages.properties
-    encoding: UTF-8		
+    basename: messages/messages
+    encoding: UTF-8
 
   jpa:
     hibernate:
