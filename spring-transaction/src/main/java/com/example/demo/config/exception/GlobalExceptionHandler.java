@@ -1,12 +1,17 @@
 package com.example.demo.config.exception;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.example.demo.message.dto.MessageDTO;
+import com.example.demo.message.service.MessageService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
 
 
@@ -45,33 +50,54 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 //ResponseEntity.badRequest()를 반환하면, HTTP 응답코드 400 + JSON 바디가 클라이언트에 전달됩니다.
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+	
+	private final MessageService messageService;
+	
+	private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     //오류를 명확하게 클라이언트오류 서버오류를 나누기 위해 
 	//HttpStatus.BAD_REQUEST, HttpStatus.INTERNAL_SERVER_ERROR 사용
-	
+	//log.error(ex) : 추가이유 NullPointerException 같은 에러가 발생하면 @ExceptionHandler(Exception.class) 안으로 들어오지만
+	//에러로그 메세지가 보이지 않아서 개발중에는 보이도록 처리
     @ExceptionHandler(BizException.class)
-    public ResponseEntity<Map<String, String>> handleBizException(BizException ex) {
-        Map<String, String> body = new HashMap<>();
-        body.put("errorCode", ex.getErrorCode());
-        body.put("message", ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleBizException(HttpServletRequest req, BizException ex) {
+    	
+    	System.out.println("BizException API에서? ::: " + req.getRequestURI());
+    	System.out.println("handleBizException ErrorCode :::" + ex.getErrorCode());
+    	System.out.println("handleBizException Message :::" + ex.getMessage());
+    	
+        String errorCode = ex.getErrorCode();
         
-        System.out.println("handleBizException body ::: " + body);
+        // ✅ MessageDTO 자체를 요청으로 재사용
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setMessageCode(errorCode);
+
+        MessageDTO errorMessage = messageService.findMessage(messageDTO);   
+    	System.out.println("errorMessage ::: " + errorMessage);
+        
+    	ErrorResponse errorResponse = new ErrorResponse();
+    	errorResponse.setErrorCode(errorCode);
+    	errorResponse.setMessage(errorMessage.getMessageText());
+    	
         
         //클라이언트 오류 400 에러
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
+    
+    
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleException(Exception ex) {
-        Map<String, String> body = new HashMap<>();
-        body.put("errorCode", "INTERNAL_ERROR");
-        body.put("message", ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleException(HttpServletRequest req, Exception ex) {
+    	log.error("Unexpected error occurred at URI: {}", req.getRequestURI(), ex);
+        ErrorResponse errorResponse = new ErrorResponse();
         
-        System.out.println("handleException body ::: " + body);
+        errorResponse.setErrorCode("INTERNAL_ERROR");
+        errorResponse.setMessage("예상치 못한 오류가 발생했습니다. 관리자에게 문의하세요.");
         
         //서버 오류 500 에러
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }
 

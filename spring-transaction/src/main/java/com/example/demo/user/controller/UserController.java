@@ -22,8 +22,8 @@ public class UserController {
 
 	private final UserService userService;
 	
-    @PostMapping("/findUserList")
-    public ResponseEntity<?> findUserList() {
+//    @PostMapping("/findUserList")
+//    public ResponseEntity<?> findUserList() {
 //        ResponseEntity<?> response;
 //        try {
 //            List<UserEntity> findUserList = userService.findUserList();
@@ -33,13 +33,27 @@ public class UserController {
 //            response = ResponseEntity.badRequest().body(error);
 //        }
 //        return response;
-    	
-        List<UserEntity> findUserList = userService.findUserList(); // BizException 발생 가능
+//    	
+//        List<UserEntity> findUserList = userService.findUserList(); // BizException 발생 가능
+//        return ResponseEntity.ok(findUserList);
+//    }
+	
+	@PostMapping("/findUserList")
+	public ResponseEntity<List<UserDTO>> findUserList() {
+        List<UserDTO> findUserList = userService.findUserList();
         return ResponseEntity.ok(findUserList);
-    }
+	}
+	
+	@PostMapping("/findUser")
+	public ResponseEntity<List<UserDTO>> findUserList(@RequestBody UserDTO userDTO) {
+        List<UserDTO> findUser = userService.findUser();
+        return ResponseEntity.ok(findUser);
+	}
     
     @PostMapping("/saveUser")
     public ResponseEntity<Void> saveUser(@RequestBody UserDTO userDTO) {
+    	System.out.println("saveUser userDTO ::: " + userDTO);
+    	
         userService.saveUser(userDTO);
         return ResponseEntity.ok().build();
     }

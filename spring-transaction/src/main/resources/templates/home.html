@@ -18,7 +18,7 @@
   <h2>유저 저장</h2>
   <form id="userForm">
     <label>Username: <input type="text" id="username" name="username" required></label><br><br>
-    <label>Email: <input type="email" id="email" name="email"></label><br><br>
+    <label>password: <input type="password" id="password" name="password"></label><br><br>
     <button type="button" id="btnUserSave">유저 저장</button>
   </form>
 
@@ -46,7 +46,7 @@
     function btnUserSave() {
       const userData = {
         username: $("#username").val(),
-        email: $("#email").val()
+        password: $("#password").val()
       };
 
       // 유효성 검사 (간단 예시)
