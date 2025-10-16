@@ -63,23 +63,23 @@ public class GlobalExceptionHandler {
 	//에러로그 메세지가 보이지 않아서 개발중에는 보이도록 처리
     @ExceptionHandler(BizException.class)
     public ResponseEntity<ErrorResponse> handleBizException(HttpServletRequest req, BizException ex) {
-    	
-    	System.out.println("BizException API에서? ::: " + req.getRequestURI());
-    	System.out.println("handleBizException ErrorCode :::" + ex.getErrorCode());
-    	System.out.println("handleBizException Message :::" + ex.getMessage());
+    	log.error("Unexpected error occurred at URI: {}", req.getRequestURI(), ex);
     	
         String errorCode = ex.getErrorCode();
+        System.out.println("errorCode:::" + errorCode);
         
         // ✅ MessageDTO 자체를 요청으로 재사용
-        MessageDTO messageDTO = new MessageDTO();
-        messageDTO.setMessageCode(errorCode);
+//        MessageDTO messageDTO = new MessageDTO();
+//        messageDTO.setMessageCode(errorCode);
 
-        MessageDTO errorMessage = messageService.findMessage(messageDTO);   
-    	System.out.println("errorMessage ::: " + errorMessage);
+//        MessageDTO errorMessage = messageService.findMessage(messageDTO);   
+//    	System.out.println("errorMessage ::: " + errorMessage);
+        
+        String errorMessage = messageService.findErrorMessageText(errorCode);
         
     	ErrorResponse errorResponse = new ErrorResponse();
     	errorResponse.setErrorCode(errorCode);
-    	errorResponse.setMessage(errorMessage.getMessageText());
+    	errorResponse.setMessage(errorMessage);
     	
         
         //클라이언트 오류 400 에러

@@ -42,16 +42,16 @@ public class UserService {
     public List<UserDTO> findUserList() {
         List<UserEntity> findUserAll = userRepository.findAll();
         
-	    if (!findUserAll.isEmpty()) {
-	    	// ⚠️ 직접 BizException 던지기
-	    	throw new BizException("TEST0002");
-	    }
+//	    if (!findUserAll.isEmpty()) {
+//	    	// ⚠️ 직접 BizException 던지기
+//	    	throw new BizException("TEST0001");
+//	    }
 	    
 	    
-//	    UserEntity user = new UserEntity();
-//	    user.setUsername("testUser3");
-//	    user.setPassword("1234");
-//		userRepository.save(user); // ⚠️ 주석 처리 가능
+	    UserEntity user = new UserEntity();
+	    user.setUsername("testUser3");
+	    user.setPassword("1234");
+		userRepository.save(user); // ⚠️ 주석 처리 가능
         
         return findUserAll.stream()
             .map(UserDTO::fromUserEntity) // Entity → DTO 변환
