@@ -25,36 +25,49 @@
 
 <div id="messageSaveResult"></div>
 
+<button id="btnDeleteMessages">삭제</button>
 <script>
 $(document).ready(function() {
 	  $("#btnMessageSearch").on("click", btnMessageSearch);
 	  $("#btnMessageSave").on("click", btnMessageSave);
+	  $("#btnDeleteMessages").on("click", btnMessagesDelete);  // 삭제 버튼 이벤트 바인딩 추가
 	});
 
-	function btnMessageSearch() {
+function btnMessageSearch() {
 	  const searchParams = {
 	    messageCode: $("#searchMessageCode").val(),
 	    messageText: $("#searchMessageText").val()
 	  };
 
-	  $("#messageResult").html("🔍 메시지 조회 중...");
+	  ajaxGet("/message/findMessage", searchParams, function(response) {
+	    debugger;
 
-	  ajaxGet("/message/findMessage", searchParams, function(data) {
-	    if (data.length === 0) {
-	      $("#messageResult").html("❗조회된 메시지가 없습니다.");
+	    if (response.code !== "SUCCESS") {
+	      alert("에러확인필요");
 	      return;
 	    }
 
+	    const messages = response.data;
+	    alert(response.message);
+
 	    let html = "<h4>메시지 목록</h4><ul>";
-	    data.forEach(msg => {
-	      html += `<li><strong>${msg.messageCode}</strong>: ${msg.messageText}</li>`;
+
+	    messages.forEach(function(msg) {
+	        html += `
+	          <li>
+	            <input type="checkbox" name="selectedMessages" value="${msg.messageCode}" id="${msg.messageCode}">
+	            <label for="${msg.messageCode}"><strong>${msg.messageCode}</strong>: ${msg.messageText}</label>
+	          </li>`;
 	    });
+
+
+
 	    html += "</ul>";
+
 	    $("#messageResult").html(html);
-	  }, function(err) {
-	    $("#messageResult").html("❌ 메시지 조회 실패");
-	  });
-	}
+	  }); // ✅ ajaxGet 콜백 함수 닫는 괄호
+	} // ✅ btnMessageSearch 함수 닫는 중괄호
+
 
 	function btnMessageSave() {
 	  const messageData = {
@@ -67,16 +80,44 @@ $(document).ready(function() {
 	    return;
 	  }
 
-	  $("#messageSaveResult").html("💾 저장 중...");
-
 	  ajaxPost("/message/saveMessage", messageData, function(response) {
-	    $("#messageSaveResult").html("✅ 메시지 저장 성공!");
-	    $("#messageForm")[0].reset();
-	    btnMessageSearch(); // 저장 후 목록 갱신
-	  }, function(error) {
-	    $("#messageSaveResult").html("❌ 메시지 저장 실패");
-	  });
+		  alert(response.message);
+		  $("#messageForm")[0].reset();
+		  btnMessageSearch(); //별도의 페이지 이동 or 금융권 그리드 저장후 재조회 하도록 ? 상황에 맞게
+		});
 	}
+	
+
+	function btnMessagesDelete() {
+		  debugger;
+		  // 체크된 체크박스 값 배열 수집
+		  const checkedBoxes = $("input[name='selectedMessages']:checked");
+		  
+		  const selectedValues = checkedBoxes.map(function() {
+		    return this.value;
+		  }).get(); // jQuery 객체에서 순수 JS 배열로 변환
+
+		  if (selectedValues.length === 0) {
+		    alert("삭제할 메시지를 선택하세요.");
+		    return;
+		  }
+
+// 		  if (!confirm(`${selectedValues.length}개의 메시지를 삭제하시겠습니까?`)) {
+// 		    return;
+// 		  }
+
+		  // ajaxPost 함수 활용해서 삭제 요청 보내기
+		  ajaxPost("/message/deleteMessages", selectedValues, function(response) {
+		    if (response.code === "SUCCESS") {
+		      alert("메시지가 성공적으로 삭제되었습니다.");
+		      btnMessageSearch(); // 삭제 후 목록 재조회
+		    } else {
+		      alert("삭제 실패: " + response.message);
+		    }
+		  });
+		}
+
+
 
 </script>
 </body>

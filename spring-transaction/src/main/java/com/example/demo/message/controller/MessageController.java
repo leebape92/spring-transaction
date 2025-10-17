@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.config.exception.ApiResponse;
+import com.example.demo.config.exception.ErrorResponse;
 import com.example.demo.message.dto.MessageDTO;
 import com.example.demo.message.service.MessageService;
 
@@ -22,25 +24,19 @@ public class MessageController {
 
 	private final MessageService messageService;
 	
-    // 메시지 목록 페이지로 이동 (단순 이동)
-    @GetMapping("/page")
-    public String messagePage() {
-        return "messages"; // templates/messages/list.html 로 이동
-    }
-
 	// 조회
 	@GetMapping("/findMessage")
-    public ResponseEntity<List<MessageDTO>> findMessageList(@ModelAttribute  MessageDTO messageDTO) {
+    public ResponseEntity<ApiResponse<List<MessageDTO>>> findMessageList(@ModelAttribute  MessageDTO messageDTO) {
 		System.out.println("messageDTO:::" + messageDTO);
-		List<MessageDTO> response = messageService.findMessageList(messageDTO);
-		return ResponseEntity.ok(response);
+		List<MessageDTO> messageList = messageService.findMessageList(messageDTO);
+		return ResponseEntity.ok(ApiResponse.success("정상적으로 조회되었습니다.", messageList));
 	}
 
 	// 생성/수정
 	@PostMapping("/saveMessage")
-	public ResponseEntity<MessageDTO> saveMessage(@RequestBody MessageDTO messageDTO) {
+	public ResponseEntity<ApiResponse<MessageDTO>> saveMessage(@RequestBody MessageDTO messageDTO) {
 		MessageDTO saved = messageService.saveMessage(messageDTO);
-		return ResponseEntity.ok(saved);
+		return ResponseEntity.ok(ApiResponse.success("정상적으로 처리되었습니다.", saved));
 	}
 
 }

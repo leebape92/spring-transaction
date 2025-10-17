@@ -1,4 +1,5 @@
 function ajaxPost(url, dto, callback, pAsync) {
+	debugger;
   $.ajax({
     url: url,
     type: "POST",
@@ -6,9 +7,11 @@ function ajaxPost(url, dto, callback, pAsync) {
     contentType: "application/json; charset=UTF-8",
     async: true, // 기본값 비동기 생략가능
     success: function(data) {
+		debugger;
       callback(data); // ✅ 호출부에서 넘긴 콜백 실행
     },
     error: function(xhr) {
+	debugger;
       errMsg = xhr.responseJSON.message;
       alert(errMsg);
     }

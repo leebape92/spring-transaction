@@ -61,32 +61,50 @@ public class GlobalExceptionHandler {
 	//HttpStatus.BAD_REQUEST, HttpStatus.INTERNAL_SERVER_ERROR 사용
 	//log.error(ex) : 추가이유 NullPointerException 같은 에러가 발생하면 @ExceptionHandler(Exception.class) 안으로 들어오지만
 	//에러로그 메세지가 보이지 않아서 개발중에는 보이도록 처리
+//    @ExceptionHandler(BizException.class)
+//    public ResponseEntity<ErrorResponse> handleBizException(HttpServletRequest req, BizException ex) {
+//    	log.error("Unexpected error occurred at URI: {}", req.getRequestURI(), ex);
+//    	
+//        String errorCode = ex.getErrorCode();
+//        System.out.println("errorCode:::" + errorCode);
+//        
+//        // ✅ MessageDTO 자체를 요청으로 재사용
+////        MessageDTO messageDTO = new MessageDTO();
+////        messageDTO.setMessageCode(errorCode);
+//
+////        MessageDTO errorMessage = messageService.findMessage(messageDTO);   
+////    	System.out.println("errorMessage ::: " + errorMessage);
+//        
+//        String errorMessage = messageService.findErrorMessageText(errorCode);
+//        
+//    	ErrorResponse errorResponse = new ErrorResponse();
+//    	errorResponse.setErrorCode(errorCode);
+//    	errorResponse.setMessage(errorMessage);
+//    	
+//        
+//        //클라이언트 오류 400 에러
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+//    }
+	
     @ExceptionHandler(BizException.class)
-    public ResponseEntity<ErrorResponse> handleBizException(HttpServletRequest req, BizException ex) {
+    public ResponseEntity<ApiResponse<String>> handleBizException(HttpServletRequest req, BizException ex) {
     	log.error("Unexpected error occurred at URI: {}", req.getRequestURI(), ex);
     	
         String errorCode = ex.getErrorCode();
         System.out.println("errorCode:::" + errorCode);
         
-        // ✅ MessageDTO 자체를 요청으로 재사용
-//        MessageDTO messageDTO = new MessageDTO();
-//        messageDTO.setMessageCode(errorCode);
-
-//        MessageDTO errorMessage = messageService.findMessage(messageDTO);   
-//    	System.out.println("errorMessage ::: " + errorMessage);
-        
         String errorMessage = messageService.findErrorMessageText(errorCode);
+        ApiResponse<String> apiResponse = ApiResponse.fail(errorCode, errorMessage);
+        System.out.println("apiResponse ::: " + apiResponse);
         
-    	ErrorResponse errorResponse = new ErrorResponse();
-    	errorResponse.setErrorCode(errorCode);
-    	errorResponse.setMessage(errorMessage);
+//    	ErrorResponse errorResponse = new ErrorResponse();
+//    	errorResponse.setErrorCode(c);
+//    	errorResponse.setMessage(errorMessage);
     	
         
         //클라이언트 오류 400 에러
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
     }
-
-    
     
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(HttpServletRequest req, Exception ex) {

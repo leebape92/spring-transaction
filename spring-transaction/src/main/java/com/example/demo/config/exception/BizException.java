@@ -13,8 +13,10 @@ public class BizException extends RuntimeException {
     private final String errorCode;
 
     public BizException(String errorCode) {
+        super(errorCode); // super()를 호출하지 않아서, 부모 클래스인 RuntimeException에 메시지가 전달되지 않습니다.
         this.errorCode = errorCode;
     }
+
     
     public BizException(String errorCode, String message) {
         super(message);
