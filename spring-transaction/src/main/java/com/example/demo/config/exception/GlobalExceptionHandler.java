@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.demo.message.dto.MessageDTO;
 import com.example.demo.message.service.MessageService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -107,15 +106,15 @@ public class GlobalExceptionHandler {
     }
     
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(HttpServletRequest req, Exception ex) {
+    public ResponseEntity<ApiResponse<String>> handleException(HttpServletRequest req, Exception ex) {
     	log.error("Unexpected error occurred at URI: {}", req.getRequestURI(), ex);
-        ErrorResponse errorResponse = new ErrorResponse();
-        
-        errorResponse.setErrorCode("INTERNAL_ERROR");
-        errorResponse.setMessage("예상치 못한 오류가 발생했습니다. 관리자에게 문의하세요.");
-        
+//        ErrorResponse errorResponse = new ErrorResponse();
+//        errorResponse.setErrorCode("INTERNAL_ERROR");
+//        errorResponse.setMessage("예상치 못한 오류가 발생했습니다. 관리자에게 문의하세요.");
+        ApiResponse<String> apiResponse = ApiResponse.fail("INTERNAL_ERROR", "예상치 못한 오류가 발생했습니다. 관리자에게 문의하세요.");
+
         //서버 오류 500 에러
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
     }
 }
 

@@ -2,6 +2,8 @@ package com.example.demo.message.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -56,7 +58,7 @@ public class MessageService {
         
 //        3.변환된 결과들을 다시 List<MessageDTO>로 모읍니다.
 
-//Stream은 일종의 데이터 흐름이라 끝에 collect()를 써서 리스트로 반환해야 실제 데이터가 됩니다.
+//		Stream은 일종의 데이터 흐름이라 끝에 collect()를 써서 리스트로 반환해야 실제 데이터가 됩니다.
         
         
         List<MessageDTO> result = new ArrayList<>();
@@ -118,8 +120,6 @@ public class MessageService {
 
     public MessageDTO saveMessage(MessageDTO messageDTO) {
     	
-    	System.out.println("messageDTO:::" + messageDTO);
-    	
     	// 메세지 코드 중복 확인
         boolean messageExists = messageRepository.existsById(messageDTO.getMessageCode());
         if(messageExists) {
@@ -140,7 +140,29 @@ public class MessageService {
         );
     }
 
-//    public void deleteMessageCode(String code) {
-//        repository.deleteById(code);
-//    }
+    public List<MessageDTO> deleteMessages(List<MessageDTO> messageDTOList) {
+        List<MessageDTO> deletedList = new ArrayList<>();
+        
+        for (MessageDTO messageDTO : messageDTOList) {
+            System.out.println("messageDTO:::" + messageDTO);
+
+            // 메시지 존재 여부 확인
+            MessageEntity messageEntity = messageRepository.findById(messageDTO.getMessageCode())
+                    .orElseThrow(() -> new BizException("TEST0004")); // 존재하지 않는 메시지 코드 예외
+
+            // useYn을 'N'으로 변경
+            messageEntity.setUseYn("N");
+
+            // 저장
+            MessageEntity savedEntity = messageRepository.save(messageEntity);
+
+            // 결과 DTO로 변환하여 리스트에 추가
+            deletedList.add(MessageDTO.fromMessageEntity(savedEntity));
+        }
+
+        return deletedList;
+    }
+
+
+
 }

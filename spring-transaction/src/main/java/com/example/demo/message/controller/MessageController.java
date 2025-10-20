@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.config.exception.ApiResponse;
-import com.example.demo.config.exception.ErrorResponse;
 import com.example.demo.message.dto.MessageDTO;
 import com.example.demo.message.service.MessageService;
 
@@ -27,7 +26,6 @@ public class MessageController {
 	// 조회
 	@GetMapping("/findMessage")
     public ResponseEntity<ApiResponse<List<MessageDTO>>> findMessageList(@ModelAttribute  MessageDTO messageDTO) {
-		System.out.println("messageDTO:::" + messageDTO);
 		List<MessageDTO> messageList = messageService.findMessageList(messageDTO);
 		return ResponseEntity.ok(ApiResponse.success("정상적으로 조회되었습니다.", messageList));
 	}
@@ -36,7 +34,15 @@ public class MessageController {
 	@PostMapping("/saveMessage")
 	public ResponseEntity<ApiResponse<MessageDTO>> saveMessage(@RequestBody MessageDTO messageDTO) {
 		MessageDTO saved = messageService.saveMessage(messageDTO);
-		return ResponseEntity.ok(ApiResponse.success("정상적으로 처리되었습니다.", saved));
+		return ResponseEntity.ok(ApiResponse.success("정상적으로 저장하였습니다.", saved));
 	}
+	
+	// 삭제
+	@PostMapping("/deleteMessages")
+	public ResponseEntity<ApiResponse<List<MessageDTO>>> deleteMessages(@RequestBody List<MessageDTO> messageDTO) {
+		List<MessageDTO> deletedList = messageService.deleteMessages(messageDTO);
+	    return ResponseEntity.ok(ApiResponse.success("정상적으로 삭제되었습니다.", deletedList));
+	}
+
 
 }
