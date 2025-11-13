@@ -19,6 +19,7 @@ public class UserDTO {
     // 여러개가 생길건데 static으로 만들지 확인해보기
     
     // 엔티티객체 -> DTO 변환
+    // 엔티티로부터 DTO 생성
     public static UserDTO fromUserEntity(UserEntity userEntity) {
     	UserDTO userDTO = new UserDTO();
     	userDTO.setId(userEntity.getId());

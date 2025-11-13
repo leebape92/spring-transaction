@@ -47,7 +47,7 @@ public class UserService {
 //	    	throw new BizException("TEST0001");
 //	    }
 	    
-	    
+	    // 이셉션 오류 발생
 	    UserEntity user = new UserEntity();
 	    user.setUsername("testUser3");
 	    user.setPassword("1234");
@@ -61,10 +61,11 @@ public class UserService {
     public List<UserDTO> findUser() {
         List<UserEntity> findUserAll = userRepository.findAll();
         
-//	    if (findUserAll.isEmpty()) {
-//	    	// ⚠️ 직접 BizException 던지기
-//	    	throw new BizException("TEST0001");
-//	    }
+        // 비지니스 오류 발생
+	    if (findUserAll.isEmpty()) {
+	    	// ⚠️ 직접 BizException 던지기
+	    	throw new BizException("TEST0001");
+	    }
 	    
 //	    UserEntity user = new UserEntity();
 //	    user.setUsername("testUser3");
