@@ -24,6 +24,8 @@ public class ApiClient {
 	private RestTemplate restTemplate;
 	private URI apiBaseUrl;
 	private String apiKey;
+	// String HEADER_API_KEY = "X-API-KEY";
+	// int READ_TIMEOUT = 60000;
 	
 	private ObjectMapper om = new ObjectMapper();
 	
@@ -37,7 +39,7 @@ public class ApiClient {
 		URI fullUri = apiBaseUrl.resolve(path);
 		
 		HttpHeaders reqHeaders = new HttpHeaders();
-		reqHeaders.set("X-API-KEY", apiKey);
+		reqHeaders.set("HEADER_API_KEY", apiKey);
 		reqHeaders.setContentType(MediaType.APPLICATION_JSON);
 		
 		ResponseEntity<String> res = restTemplate.exchange(fullUri, HttpMethod.POST, new HttpEntity<>(reqBody, reqHeaders), String.class);
