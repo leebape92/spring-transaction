@@ -30,7 +30,7 @@ public class WebClientUtil {
 				os.write(input, 0, input.length);
 			}
 			
-			int responseCde = conn.getResponseCode();
+			int responseCode = conn.getResponseCode();
 			
 			try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"))) {
 				String line;

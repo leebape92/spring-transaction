@@ -24,10 +24,14 @@
 
   <div id="saveResult"></div>
 
+  <h2>요청테스트</h2>
+  <button id="btnRequest">호출</button>
+
   <script>
     $(document).ready(function() {
       $("#btnUserList").on("click", btnUserList);
       $("#btnUserSave").on("click", btnUserSave);
+      $("#btnRequest").on("click", btnRequest);
     });
 
     function btnUserList() {
@@ -42,7 +46,8 @@
         $("#result").html(html);
       });
     }
-
+	
+    // 저장
     function btnUserSave() {
       const userData = {
         username: $("#username").val(),
@@ -63,6 +68,13 @@
         btnUserList(); // 저장 후 목록 새로고침
       }, function(error) {
         $("#saveResult").html("❌ 저장 실패");
+      });
+    }
+    
+    // 요청 버튼
+	function btnRequest() {
+      ajaxPost("/request/test", {}, function(data) {
+    	  console.log("data:", "", data);
       });
     }
   </script>

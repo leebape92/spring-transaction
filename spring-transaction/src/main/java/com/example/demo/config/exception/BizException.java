@@ -22,7 +22,7 @@ public class BizException extends RuntimeException {
         super(message);
         this.errorCode = errorCode;
     }
-
+    
     public BizException(String errorCode, String message, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
