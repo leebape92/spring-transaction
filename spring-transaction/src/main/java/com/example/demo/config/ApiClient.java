@@ -42,13 +42,16 @@ public class ApiClient {
 		reqHeaders.set("HEADER_API_KEY", apiKey);
 		reqHeaders.setContentType(MediaType.APPLICATION_JSON);
 		
-		ResponseEntity<String> res = restTemplate.exchange(fullUri, HttpMethod.POST, new HttpEntity<>(reqBody, reqHeaders), String.class);
+		HttpEntity<Object> request = new HttpEntity<Object>(reqBody, reqHeaders); // 왜 필요할까?
+		
+		ResponseEntity<String> res = restTemplate.exchange(fullUri, HttpMethod.POST, request, String.class);
 		
 		HttpStatusCode status = res.getStatusCode();
 		int sc = status.value();
 		
 		String body = res.getBody();
 		
+		// 비지니스 에러 정의
 		if(sc >= 550) {
 			String msg = extractMessage(body);
 			

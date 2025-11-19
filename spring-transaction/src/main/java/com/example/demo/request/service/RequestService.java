@@ -25,6 +25,9 @@ public class RequestService {
             );
 
         } catch (BizException e) {
+        	// 또는 호출한 서비스에 값 보내주기
+//        	ResponseDTO res = new ResponseDTO();
+//        	return res;
             throw new BizException("외부 API 호출 중 오류 발생: " + e.getMessage());
         }
     }
