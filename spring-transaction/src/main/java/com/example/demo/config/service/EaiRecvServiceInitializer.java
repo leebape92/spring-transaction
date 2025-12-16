@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import com.example.demo.config.exception.BizException;
 
 
+// 어플리케이션 실행시 @EaiRecvService 선언된 서비스를 스캔하여 EAI수신 인터페이스 레지스트리에 등록하는 클래스
+
 @Component
-public class test implements SmartInitializingSingleton {
+public class EaiRecvServiceInitializer implements SmartInitializingSingleton {
 	
 	@Autowired
 	private ApplicationContext applicationcontext;
