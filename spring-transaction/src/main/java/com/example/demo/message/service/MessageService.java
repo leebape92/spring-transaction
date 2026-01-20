@@ -118,27 +118,87 @@ public class MessageService {
 //    }
 
 
+//    public MessageDTO saveMessage(MessageDTO messageDTO) {
+//    	
+//    	// 메세지 코드 중복 확인
+//        boolean messageExists = messageRepository.existsById(messageDTO.getMessageCode());
+//        if(messageExists) {
+//        	throw new BizException("TEST0003");	
+//        }
+//    	
+//        MessageEntity entity = messageRepository.findById(messageDTO.getMessageCode())
+//                .orElse(new MessageEntity());
+//
+//        entity.setMessageCode(messageDTO.getMessageCode());
+//        entity.setMessageText(messageDTO.getMessageText());
+//        entity.setUseYn(messageDTO.getUseYn());
+//
+//        return new MessageDTO(
+//        		messageRepository.save(entity).getMessageCode(),
+//                entity.getMessageText(),
+//                entity.getUseYn()
+//        );
+//    }
+    
+//    public MessageDTO saveMessage(MessageDTO messageDTO) {
+//    	
+//    	
+//    	// 화살표함수
+////        MessageEntity messageEntity = messageRepository.findById(messageDTO.getMessageCode())
+////                .orElseThrow(() -> new BizException("TEST0003"));
+//    	
+//    	// Optional<T>는 값이 있을 수도 있고, 없을 수도 있음을 명시적으로 표현하기 위한 Java 8 클래스입니다.
+//    	// null 반환으로 인한 NullPointerException 방지
+//    	Optional<MessageEntity> optionalMessage = messageRepository.findById(messageDTO.getMessageCode());
+//    	System.out.println("optionalMessage ::: " + optionalMessage);
+//    	
+//    	// optionalMessage.isPresent() 값이 있으면 true
+//    	// optionalMessage.isPresent() 값이 없으면 false
+//    	if (!optionalMessage.isPresent()) {
+//    	    throw new BizException("TEST0003");
+//    	}
+//    	
+//    	// MessageEntity 꺼냄
+//    	MessageEntity messageEntity = optionalMessage.get();
+//    	
+//    	messageEntity.setMessageCode(messageDTO.getMessageCode());
+//    	messageEntity.setMessageText(messageDTO.getMessageText());
+//    	messageEntity.setUseYn(messageDTO.getUseYn());
+//    	
+//    	// 저장 로직 실행
+//    	messageRepository.save(messageEntity);
+//    	
+//		return messageDTO;
+//    }
+    
+    // 예외를 던질 필요가 없음
     public MessageDTO saveMessage(MessageDTO messageDTO) {
-    	
-    	// 메세지 코드 중복 확인
-        boolean messageExists = messageRepository.existsById(messageDTO.getMessageCode());
-        if(messageExists) {
-        	throw new BizException("TEST0003");	
+
+        // DB 조회 및 검증
+        Optional<MessageEntity> optionalMessage = messageRepository.findById(messageDTO.getMessageCode());
+        System.out.println("optionalMessage :::" + optionalMessage);
+        
+        MessageEntity messageEntity;
+
+        if (optionalMessage.isPresent()) {
+            // 값이 있으면 기존 엔티티 가져와서 수정
+            messageEntity = optionalMessage.get();
+            messageEntity.setMessageText(messageDTO.getMessageText());
+            messageEntity.setUseYn(messageDTO.getUseYn());
+        } else {
+            // 값이 없으면 새 엔티티 생성 후 저장
+            messageEntity = new MessageEntity();
+            messageEntity.setMessageCode(messageDTO.getMessageCode());
+            messageEntity.setMessageText(messageDTO.getMessageText());
+            messageEntity.setUseYn(messageDTO.getUseYn());
         }
-    	
-        MessageEntity entity = messageRepository.findById(messageDTO.getMessageCode())
-                .orElse(new MessageEntity());
 
-        entity.setMessageCode(messageDTO.getMessageCode());
-        entity.setMessageText(messageDTO.getMessageText());
-        entity.setUseYn(messageDTO.getUseYn());
+        // 저장
+        messageRepository.save(messageEntity);
 
-        return new MessageDTO(
-        		messageRepository.save(entity).getMessageCode(),
-                entity.getMessageText(),
-                entity.getUseYn()
-        );
+        return messageDTO;
     }
+
 
     public List<MessageDTO> deleteMessages(List<MessageDTO> messageDTOList) {
         List<MessageDTO> deletedList = new ArrayList<>();

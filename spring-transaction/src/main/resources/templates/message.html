@@ -75,10 +75,10 @@ function btnMessageSearch() {
 	    messageText: $("#messageText").val()
 	  };
 
-	  if (!messageData.messageCode || !messageData.messageText) {
-	    alert("메시지 코드와 내용을 모두 입력하세요.");
-	    return;
-	  }
+// 	  if (!messageData.messageCode || !messageData.messageText) {
+// 	    alert("메시지 코드와 내용을 모두 입력하세요.");
+// 	    return;
+// 	  }
 
 	  ajaxPost("/message/saveMessage", messageData, function(response) {
 		  alert(response.message);

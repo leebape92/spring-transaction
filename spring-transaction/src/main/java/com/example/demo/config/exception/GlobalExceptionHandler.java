@@ -107,7 +107,8 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleException(HttpServletRequest req, Exception ex) {
-    	log.error("500 Unexpected error occurred at URI: {}", req.getRequestURI(), ex);
+    	log.error("500 Unexpected error occurred at URI: {}", req.getRequestURI());
+    	log.error("500 Unexpected error occurred at Exception : {}", ex);
 //        ErrorResponse errorResponse = new ErrorResponse();
 //        errorResponse.setErrorCode("INTERNAL_ERROR");
 //        errorResponse.setMessage("예상치 못한 오류가 발생했습니다. 관리자에게 문의하세요.");

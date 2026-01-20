@@ -34,6 +34,7 @@ public class MessageController {
 	@PostMapping("/saveMessage")
 	public ResponseEntity<ApiResponse<MessageDTO>> saveMessage(@RequestBody MessageDTO messageDTO) {
 		MessageDTO saved = messageService.saveMessage(messageDTO);
+		System.out.println("saved:::" + saved);
 		return ResponseEntity.ok(ApiResponse.success("정상적으로 저장하였습니다.", saved));
 	}
 	
