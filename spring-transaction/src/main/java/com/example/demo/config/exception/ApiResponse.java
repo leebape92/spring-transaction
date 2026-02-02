@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponse<T> {
-    private String code;       // 성공 코드 (예: "SUCCESS")
+    private String code;       // 성공 코드 (예: "SUCCESS")zz
     private String message;    // 성공 메시지 (예: "메시지가 저장되었습니다")
     private T data;            // 실제 반환 데이터 (DTO, null 등)
 

@@ -188,6 +188,11 @@ public class MessageService {
         } else {
             // 값이 없으면 새 엔티티 생성 후 저장
             messageEntity = new MessageEntity();
+            
+            if(messageDTO.getMessageCode() == null) {
+            	throw new BizException("test1111");
+            }
+            
             messageEntity.setMessageCode(messageDTO.getMessageCode());
             messageEntity.setMessageText(messageDTO.getMessageText());
             messageEntity.setUseYn(messageDTO.getUseYn());
