@@ -24,7 +24,7 @@ public class MessageController {
 	private final MessageService messageService;
 	
 	// 조회
-	@GetMapping("/findMessage")
+	@GetMapping("/findMessageList")
     public ResponseEntity<ApiResponse<List<MessageDTO>>> findMessageList(@ModelAttribute  MessageDTO messageDTO) {
 		List<MessageDTO> messageList = messageService.findMessageList(messageDTO);
 		return ResponseEntity.ok(ApiResponse.success("정상적으로 조회되었습니다.", messageList));
@@ -42,6 +42,7 @@ public class MessageController {
 	@PostMapping("/deleteMessages")
 	public ResponseEntity<ApiResponse<List<MessageDTO>>> deleteMessages(@RequestBody List<MessageDTO> messageDTO) {
 		List<MessageDTO> deletedList = messageService.deleteMessages(messageDTO);
+		System.out.println("deletedList:::" + deletedList);
 	    return ResponseEntity.ok(ApiResponse.success("정상적으로 삭제되었습니다.", deletedList));
 	}
 
