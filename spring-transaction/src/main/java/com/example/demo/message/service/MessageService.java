@@ -44,8 +44,11 @@ public class MessageService {
     	
         List<MessageEntity> findMessageEntityList = messageRepository.findMessageList(
         		CommonUtils.emptyToNull(messageDTO.getMessageCode()),
-        		CommonUtils.emptyToNull(messageDTO.getMessageText())
+        		CommonUtils.emptyToNull(messageDTO.getMessageText()),
+        		CommonUtils.emptyToNull(messageDTO.getUseYn())
         );
+        
+        System.out.println("findMessageEntityList :::" + findMessageEntityList);
         
         List<MessageDTO> result = new ArrayList<>();
         for (MessageEntity findMessageEntity : findMessageEntityList) {
@@ -55,6 +58,8 @@ public class MessageService {
         return result;
     }
     
+    
+    // 누군가 등록중에 아이디를 선점할수있기떄문에 재정의 필요
     public MessageDTO saveMessage(MessageDTO messageDTO) {
     	
         // DB 조회 및 검증
@@ -66,13 +71,14 @@ public class MessageService {
             // 값이 있으면 기존 엔티티 가져와서 수정
             messageEntity = optionalMessage.get();
             messageEntity.setMessageText(messageDTO.getMessageText());
+            messageEntity.setMessageDes(messageDTO.getMessageDes());
             messageEntity.setUseYn(messageDTO.getUseYn());
         } else {
             // 값이 없으면 새 엔티티 생성 후 저장
             messageEntity = new MessageEntity();
             
             messageEntity.setMessageCode(messageDTO.getMessageCode());
-            messageEntity.setMessageText(messageDTO.getMessageText());
+            messageEntity.setMessageDes(messageDTO.getMessageDes());
             messageEntity.setUseYn(messageDTO.getUseYn());
         }
         

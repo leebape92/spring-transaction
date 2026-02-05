@@ -12,13 +12,20 @@
 <h3>메시지 조회</h3>
 <label>메시지 코드: <input type="text" id="searchMessageCode"></label>
 <label>메시지 내용: <input type="text" id="searchMessageText"></label>
-<button type="button" id="btnMessageSearch">메시지 조회</button>
+<label>사용여부: 
+    <select id="searchUseYn">
+        <option value="">전체</option>
+        <option value="Y">사용</option>
+        <option value="N">미사용</option>
+    </select>
+</label>
+<button type="button" id="btnMessageSearch">조회</button>
 
 <div id="messageResult"></div>
 
-<h3>메시지 저장</h3>
+<h3>메시지 상세</h3>
 <form id="messageForm">
-	<label>메시지 코드: <input type="text" id="messageCode" name="messageCode" required></label><br><br>
+	<label>메시지 코드: <input type="text" id="messageCode" name="messageCode" required></label><button type="button" id="btnMessaCodeCheck">중복확인</button><br><br>
 	<label>메시지 내용: <input type="text" id="messageText" name="messageText" required></label><br><br>
 	<label>메시지 설명: <input type="text" id="messageDes"  name="messageDes" required></label><br><br>
 	<label>사용 여부: 
@@ -27,55 +34,91 @@
 	      <option value="N">미사용</option>
 	    </select>
 	</label>
-  <button type="button" id="btnMessageSave">메시지 저장</button>
+	<button type="button" id="btnMessageSave">메시지 저장</button>
 </form>
 
 <div id="messageSaveResult"></div>
 
+<button id="btnDeleteMessages">신규</button>
 <button id="btnDeleteMessages">삭제</button>
 <script>
-$(document).ready(function() {
-	  $("#btnMessageSearch").on("click", btnMessageSearch);
-	  $("#btnMessageSave").on("click", btnMessageSave);
-	  $("#btnDeleteMessages").on("click", btnMessagesDelete);  // 삭제 버튼 이벤트 바인딩 추가
+	$(document).ready(function() {
+		
+		// 조회
+		$("#btnMessageSearch").on("click", btnMessageSearch);
+		
+		// 저장
+		$("#btnMessageSave").on("click", btnMessageSave);
+		
+		// 삭제
+		$("#btnDeleteMessages").on("click", btnMessagesDelete);
+		
+		// 행클릭
+		$("#messageResult").on("click", ".messageRow", messageRowClick);
+		
+		
 	});
+	
+	function btnMessageSearch() {
+	    const searchParams = {
+	        messageCode: $("#searchMessageCode").val(),
+	        messageText: $("#searchMessageText").val(),
+	        useYn : $("#searchUseYn").val()
+	    };
 
-function btnMessageSearch() {
-	  const searchParams = {
-	    messageCode: $("#searchMessageCode").val(),
-	    messageText: $("#searchMessageText").val()
-	  };
+	    ajaxGet("/message/findMessageList", searchParams, function(response) {
+	        if (response.code !== "SUCCESS") {
+	            alert("에러확인필요");
+	            return;
+	        }
 
-	  ajaxGet("/message/findMessageList", searchParams, function(response) {
-	    debugger;
+	        const messages = response.data;
+	        alert(response.message);
 
-	    if (response.code !== "SUCCESS") {
-	      alert("에러확인필요");
-	      return;
-	    }
+	        let html = "";
+	        html += "<h3>메시지 목록</h3>";
+	        html += "<table border='1' style='width:100%; border-collapse:collapse;'>";
+	        html += "<thead>";
+	        html += "  <tr>";
+	        html += "    <th>선택</th>";
+	        html += "    <th>메세지코드</th>";
+	        html += "    <th>메세지명</th>";
+	        html += "    <th>메시지설명</th>";
+	        html += "    <th>사용여부</th>";
+	        html += "  </tr>";
+	        html += "</thead>";
+	        html += "<tbody>";
 
-	    const messages = response.data;
-	    alert(response.message);
+	        
+	        // html data를 카밀케이스로 사용하기 위해서는 - 사용해야함
+	        messages.forEach(function(messagesData) {
+	            html += `
+	                <tr class="messageRow" 
+	                    data-message-code="${messagesData.messageCode}" 
+	                    data-message-text="${messagesData.messageText}" 
+	                    data-message-des="${messagesData.messageDes}" 
+	                    data-use-yn="${messagesData.useYn}">
+	                    <td style="text-align:center;">
+	                        <input type="checkbox" name="selectedMessages" value="${messagesData.messageCode}">
+	                    </td>
+	                    <td>${messagesData.messageCode}</td>
+	                    <td>${messagesData.messageText || ""}</td>
+	                    <td>${messagesData.messageDes || ""}</td>
+	                    <td>${messagesData.useYn === "Y" ? "사용" : "미사용"}</td>
+	                </tr>
+	            `;
+	        });
 
-	    let html = "<h4>메시지 목록</h4><ul>";
+	        html += "</tbody>";
+	        html += "</table>";
 
-	    messages.forEach(function(msg) {
-	        html += `
-	          <li>
-	            <input type="checkbox" name="selectedMessages" value="${msg.messageCode}" id="${msg.messageCode}">
-	            <label for="${msg.messageCode}"><strong>${msg.messageCode}</strong>: ${msg.messageText}</label>
-	          </li>`;
+	        $("#messageResult").html(html);
 	    });
+	}
 
-
-
-	    html += "</ul>";
-
-	    $("#messageResult").html(html);
-	  }); // ✅ ajaxGet 콜백 함수 닫는 괄호
-	} // ✅ btnMessageSearch 함수 닫는 중괄호
-
-
+	
+	
+	
 	function btnMessageSave() {
 	  const messageData = {
 	    messageCode : $("#messageCode").val(),
@@ -98,29 +141,52 @@ function btnMessageSearch() {
 	
 
 	function btnMessagesDelete() {
-		  debugger;
-		  const checkedBoxes = $("input[name='selectedMessages']:checked");
-		  const selectedValues = checkedBoxes.map(function() {
-		    return this.value;
-		  }).get();
-
-		  if (selectedValues.length === 0) {
+		
+		const checkedBoxes = $("input[name='selectedMessages']:checked");
+		const selectedValues = checkedBoxes.map(function() {
+			return this.value;
+		}).get();
+		
+		if (selectedValues.length === 0) {
 		    alert("삭제할 메시지를 선택하세요.");
 		    return;
-		  }
-
-		  // messageCode 프로퍼티를 가진 객체 배열로 변환
-		  const requestData = selectedValues.map(code => ({ messageCode: code }));
-
-		  ajaxPost("/message/deleteMessages", requestData, function(response) {
-		    if (response.code === "SUCCESS") {
-		      alert("메시지가 성공적으로 삭제되었습니다.");
-		      btnMessageSearch();
-		    } else {
-		      alert("삭제 실패: " + response.message);
-		    }
-		  });
 		}
+
+		// messageCode 프로퍼티를 가진 객체 배열로 변환
+		const requestData = selectedValues.map(code => ({ messageCode: code }));
+		
+		ajaxPost("/message/deleteMessages", requestData, function(response) {
+			if (response.code === "SUCCESS") {
+				alert("메시지가 성공적으로 삭제되었습니다.");
+				btnMessageSearch();
+			} else {
+				alert("삭제 실패: " + response.message);
+			}
+		});
+	};
+	
+	
+	
+	function messageRowClick() {
+		
+		const $messageRow = $(this);
+		debugger;
+	    const messageCode = $messageRow.data("messageCode");
+	    const messageText = $messageRow.data("messageText");
+	    const messageDes  = $messageRow.data("messageDes");
+	    const useYn       = $messageRow.data("useYn");
+	    
+	    // 인풋필드 초기화함수 생성필요
+	    
+	    $("#messageCode").val(messageCode); //readonly 처리
+	    $("#messageText").val(messageText);
+	    $("#messageDes").val(messageDes);
+	    $("#useYn").val(useYn);
+	    
+	}
+	
+	// 신규버튼을 클릭하면 신규라는 C CREATE 파라미터값을 보내고
+	// 수정이면 U 파라미터값 보내기
 
 
 

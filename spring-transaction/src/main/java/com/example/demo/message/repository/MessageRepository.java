@@ -14,11 +14,12 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
 	Optional<MessageEntity> findByMessageCode(String messageCode);
 	
     @Query("SELECT m FROM MessageEntity m " +
-    		"WHERE m.useYn = 'Y' " +
+    		"WHERE (:useYn IS NULL OR m.useYn = :useYn) " +
     		"AND (:messageCode IS NULL OR m.messageCode LIKE %:messageCode%) " +
     		"AND (:messageText IS NULL OR m.messageText LIKE %:messageText%)")
     List<MessageEntity> findMessageList(
         @Param("messageCode") String messageCode,
-        @Param("messageText") String messageText
+        @Param("messageText") String messageText,
+        @Param("useYn") String useYn
     );
 }
