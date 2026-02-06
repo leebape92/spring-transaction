@@ -45,6 +45,14 @@ public class MessageController {
 		System.out.println("deletedList:::" + deletedList);
 	    return ResponseEntity.ok(ApiResponse.success("정상적으로 삭제되었습니다.", deletedList));
 	}
+	
+	// 코드 중복 체크
+	@GetMapping("/findMessageCodeDupCheck")
+    public ResponseEntity<ApiResponse<MessageDTO>> findMessageCodeDupCheck(@ModelAttribute  MessageDTO messageDTO) {
+		MessageDTO messageCode = messageService.findCodeCheck(messageDTO);
+		return ResponseEntity.ok(ApiResponse.success("정상적으로 조회되었습니다.", messageList));
+	}
+
 
 
 }

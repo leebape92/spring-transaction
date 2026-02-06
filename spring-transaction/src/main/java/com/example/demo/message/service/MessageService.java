@@ -62,11 +62,17 @@ public class MessageService {
     // 누군가 등록중에 아이디를 선점할수있기떄문에 재정의 필요
     public MessageDTO saveMessage(MessageDTO messageDTO) {
     	
+    	
+    	
+    	
         // DB 조회 및 검증
         Optional<MessageEntity> optionalMessage = messageRepository.findByMessageCode(messageDTO.getMessageCode());
         
         MessageEntity messageEntity;
 
+		//messageDto status:C -> 신규
+		//messageDto status:U -> 수정
+        
         if (optionalMessage.isPresent()) {
             // 값이 있으면 기존 엔티티 가져와서 수정
             messageEntity = optionalMessage.get();
@@ -134,5 +140,11 @@ public class MessageService {
         return message;
         
     }
+
+
+	public MessageDTO findCodeCheck(MessageDTO messageDTO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

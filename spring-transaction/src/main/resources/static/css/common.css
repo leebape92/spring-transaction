@@ -1,0 +1,25 @@
+/* readonly input */
+input[readonly] {
+    background-color: #f2f2f2;
+    color: #666;
+    cursor: not-allowed;
+}
+
+/* readonly 상태에서 focus */
+input[readonly]:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* 비활성화 버튼 */
+button:disabled {
+    background-color: #ddd;
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* 선택된 테이블 행 (확장용) */
+tr.messageRow:hover {
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
